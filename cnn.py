@@ -372,7 +372,7 @@ class Model(object):
                 res = self.validate(test_data)
                 correct_res.append(res)
                 print "Epoch {0}: {1} / {2}".format(
-                    epoch, self.validate(test_data), n_test)
+                    epoch, res, n_test)
                 print "Epoch {0} complete".format(epoch)
                 # time
                 timer = time.time() - start
@@ -390,7 +390,7 @@ class Model(object):
         batch_size = len(batch)
 
         for image, label in batch:
-            image = image.reshape((1,28,28))
+            image = image.reshape(self.input_shape)
             _ = self.feedforward(image)
             final_res, delta_b, delta_w = self.backprop(image, label)
 
@@ -414,7 +414,7 @@ class Model(object):
         return error
 
     def validate(self,data):
-        data = [(im.reshape((1,28,28)),y) for im,y in data]
+        data = [(im.reshape(self.input_shape),y) for im,y in data]
         test_results = [(np.argmax(self.feedforward(x)),y) for x, y in data]
         return sum(int(x == y) for x, y in test_results) 
 
